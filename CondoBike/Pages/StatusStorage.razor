@@ -1,0 +1,50 @@
+
+ @inject BicycleStorage bsService
+    <div class="panel panel-primary" style="max-width: 500px; max-height: 600px; margin: 0 auto;">
+        <div class="panel-heading">
+            Bicycle Storage Status
+        </div>
+        <div class="panel-body">
+            Capacity: @bsService.BicycleStorageCapacity
+            <div class="container">
+                <span style="font-size: 80px;"> @bsService.Bicycles.Count.ToString() </span>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div> 
+                Stored: @StoredBicycles
+            </div>
+            <div>
+                Out: @NotStoredBicycles
+            </div>
+        </div>
+    </div>
+    
+    
+ 
+ @code
+{
+    public int Capacity;
+
+    public string Ocupation;
+
+    public string StoredBicycles {get ; set ;}
+
+    public string NotStoredBicycles {get ; set ;}
+    protected override void OnInitialized()
+    {
+        getCapacity();
+    }
+    public void getCapacity (){
+        
+        Capacity = bsService.BicycleStorageCapacity;
+        Ocupation = bsService.StorageOcupation().ToString("0.00");
+    }
+
+    public void getStatusBicycles()
+    {
+       StoredBicycles = bsService.Bicycles.Where(b => b.BicycleStatus == BicycleStatus.Guarded).ToList().Count.ToString(); 
+       NotStoredBicycles = bsService.Bicycles.Where(b => b.BicycleStatus == BicycleStatus.NotGuarded).ToList().Count.ToString();
+    }
+
+}

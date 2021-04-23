@@ -1,0 +1,53 @@
+@using CondoBike.Model;
+@inject BicycleStorage bs
+<div class="container" style="min-height: 800px; align-content: center;" id="TakeComponent">
+    @if(BicyclesFromStorage.Any())
+    {
+        <table class="table table-hover">
+            <thead>
+                <td>
+                    Image
+                </td>
+                <td>
+                    Identification
+                </td>
+                <td>
+                    Status
+                </td>
+            </thead>
+            <tbody>
+                @foreach (var item in BicyclesFromStorage)
+                {
+                <tr>
+                    <td>
+                        <img src="https://vectoricons.net/images/products/iconsets/bike@700x575.png" style="height: 150px; width: 150px">   
+                    </td>
+                    <td>
+                        item.Identification
+                    </td>
+                    <td>
+                        item.Status
+                    </td>
+                </tr>    
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {   <img title="Without Bikes!" src="https://previews.123rf.com/images/amin268/amin2681804/amin268180400133/99272999-no-bicycle-line-icon-prohibition-and-forbidden-no-bike-sign-vector-graphics-a-linear-pattern-on-a-wh.jpg" 
+        style="width: 300px; heigth: 300px; margin: 0 auto"/>   
+        <h3> Sorry we haven't any bicycle with us. Do you want store your bicycle? click <a href="#STORE">here!</a></h3>   
+    } 
+</div>
+
+@code
+{
+
+    [Parameter]
+    public List<Bicycle> BicyclesFromStorage {get ; set;}
+    protected override void OnInitialized()
+        {
+            BicyclesFromStorage = bs.Bicycles;
+        }
+    
+}

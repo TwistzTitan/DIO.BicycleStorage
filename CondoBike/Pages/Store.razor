@@ -1,0 +1,90 @@
+@using CondoBike.Model
+@inject BicycleStorage bsService
+
+
+<div class="container" style="text-align:center" id="StoreComponent">
+    <h2> We will be happy to store your bicycle, trust us!</h2>
+    <br>
+    <br>
+    <h5> Please fill the informations bellow to us identify your bicycle</h5>
+
+</div>
+<div class="container" style="max-width: 800px; min-width: 600px">
+        <div>
+        <EditForm Model="@OwnerModel" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <label>CPF</label>
+            <InputText class="form-control input" id="CPF" @bind-Value="OwnerModel.OwnerCPF" placeholder="Owner identification"/>
+            <br>
+            <label>Apartament</label>
+            <InputNumber class="form-control input" id="Apartament" @bind-Value="apartament" placeholder="Residence Number"/>
+            <br>
+            <label>Block</label>
+            <InputNumber class="form-control input" id="Block"  @bind-Value="block" placeholder="Residence Block"/>
+            <br>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </EditForm>
+        <br>
+       @if(editContextOwner.Validate())
+       {
+           <EditForm Model="@BicycleModel" OnSubmit="@HandleValidBicycleSubmit" >
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <label>Bicycle Nick Name </label>
+            <InputText class="form-control input"@bind-Value="BicycleModel.BicycleNickName"/>
+            <br>
+            <label>Bicyle Color</label>
+            <InputText class="form-control input " @bind-Value="BicycleModel.BicycleColor"/>
+            <br>
+            <button type="submit" class="btn btn-success">Store!</button>
+        </EditForm>
+       } 
+        
+        </div>
+    <div>
+    
+    </div>
+    LOG : @log
+</div>
+
+@code   
+{
+    private Owner OwnerModel;
+    private Bicycle BicycleModel;
+    private int apartament;
+    private int block;
+    private EditContext editContextOwner;
+    private EditContext editContextBicycle;
+    public String log {get ; set;}
+
+    protected override void OnInitialized()
+        {
+            BicycleModel = new Bicycle();
+            OwnerModel = new Owner();
+            editContextOwner = new EditContext(OwnerModel);
+            editContextBicycle = new EditContext(BicycleModel);
+        }
+    
+    public void HandleValidSubmit()
+    {
+       if( editContextOwner.Validate())
+       {
+           OwnerModel.OwnerResidence = new Residence(apartament,block);
+           BicycleModel.BicycleOwner = OwnerModel;
+           log = "Valid";
+           StateHasChanged();
+       }     
+    }
+    public void HandleValidBicycleSubmit(){
+
+        if(editContextBicycle.Validate()){
+            bsService.BicycleStorageCapacity = 30;
+            log = bsService.Store(BicycleModel) ? "Stored" : "Not Stored";
+            StateHasChanged();
+        }   
+            
+    }
+}
+
+    
